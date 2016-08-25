@@ -3,50 +3,32 @@ package com.syw.ors.utilities;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.Certificate;
 import java.io.*;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
 public class NetClient {
 
-	public static void Get(String url_str) {
+	public static void GetHTTPS(String url_str) {
+		URL url;
 		try {
-			URL url = new URL(url_str);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setRequestProperty("Accept", "application/json");
 
-			if (conn.getResponseCode() != 200) {
-				System.err.println("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			}
+			url = new URL(url_str);
+			HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
 
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					(conn.getInputStream())));
+			print_https_cert(con);
 
-			String output;
-			System.out.println("Output from Server .... \n");
-			while ((output = br.readLine()) != null) {
-				System.out.println(output);
-			}
-
-			conn.disconnect();
+			print_content(con);
 
 		} catch (MalformedURLException e) {
-
 			e.printStackTrace();
-
 		} catch (IOException e) {
-
 			e.printStackTrace();
-
 		}
-
 	}
 
 	public static void PutHTTPS(String url_str, String json) {
@@ -62,10 +44,8 @@ public class NetClient {
 			out.write(json);
 			out.close();
 
-			// dump all cert info
 			print_https_cert(con);
 
-			// dump all the content
 			print_content(con);
 
 		} catch (MalformedURLException e) {
