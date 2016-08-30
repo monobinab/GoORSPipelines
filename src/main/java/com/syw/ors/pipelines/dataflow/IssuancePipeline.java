@@ -20,12 +20,9 @@ import com.google.cloud.dataflow.sdk.values.PCollection;
 import com.syw.ors.pipeline.common.Constants;
 import com.syw.ors.pipeline.common.OrsRequestFilterPredicate;
 import com.syw.ors.pipeline.common.OrsRequestParserTableRowDoFn;
-import com.syw.ors.pipeline.common.ParseRequestDoFn;
+import com.syw.ors.pipeline.common.ParseIssuanceDoFn;
 
-//import PCollection;
-
-public class ClientRequestPipeline implements Constants{
-	
+public class IssuancePipeline  implements Constants{
 	private static final String DATA_TYPE_STRING = "STRING";
 	
 	@SuppressWarnings("unused")
@@ -56,7 +53,23 @@ public class ClientRequestPipeline implements Constants{
 	    fields.add(new TableFieldSchema().setName(REQUEST_STATUS).setType(DATA_TYPE_STRING));
 	    fields.add(new TableFieldSchema().setName(LOG_TYPE).setType(DATA_TYPE_STRING));
 	    fields.add(new TableFieldSchema().setName(DATA_JSON).setType(DATA_TYPE_STRING));
-	    fields.add(new TableFieldSchema().setName(LOAD_TIME).setType(DATA_TYPE_STRING));	    
+	    fields.add(new TableFieldSchema().setName(LOAD_TIME).setType(DATA_TYPE_STRING));	  
+	    
+	    fields.add(new TableFieldSchema().setName(ISSUE_TYPE).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(MEMBER_ID).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(ISSUE_TIME).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(OFFER_CODE).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(OFFER_TYPE).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(OFFER_NAME).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(AMOUNT_TYPE).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(AMOUNT).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(SEC_AMOUNT_TYPE).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(SEC_AMOUNT).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(PRODUCT_GROUP).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(PRODUCT_SUB_GROUP).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(NUMBER_OF_OFFERS).setType(DATA_TYPE_STRING));
+	    fields.add(new TableFieldSchema().setName(MAX_CATALINA_OFFERS).setType(DATA_TYPE_STRING));
+	    
 	    TableSchema schema = new TableSchema().setFields(fields);
 	    
 	    //Load data from file as collection
@@ -68,7 +81,7 @@ public class ClientRequestPipeline implements Constants{
 	    
 	    //apply Pipeline transforms to parse raw lines
 	    PCollection<List<KV<String, String>>> parsedRecordCollection = rawLines.apply(
-	    		ParDo.named("ParseRequest").of(new ParseRequestDoFn()));
+	    		ParDo.named("ParseIssuance").of(new ParseIssuanceDoFn()));
 	    	    
 		//filter
 		PCollection<List<KV<String, String>>> filteredRecordCollections = parsedRecordCollection.apply(
@@ -85,7 +98,7 @@ public class ClientRequestPipeline implements Constants{
     
 		//convert to table rows
 	    PCollection<TableRow> tableRowCollection = filteredRecordCollections.apply(
-	    		ParDo.named("RequestParser").of(new OrsRequestParserTableRowDoFn()));
+	    		ParDo.named("IssuanceParser").of(new OrsRequestParserTableRowDoFn()));
 	    
 	    //PCollection<String> formatOutput = filteredOutput.apply(ParDo.named("Formatted").of(new ClientRequestFormatOutput()));
 	    //formatOutput.apply(TextIO.Write.named("WriteintoFile").to("gs://ms_orslogs/output/ors_request_parsedfiltered_datafile.txt"));
@@ -93,7 +106,7 @@ public class ClientRequestPipeline implements Constants{
 	    tableRowCollection.apply(
 	    		BigQueryIO.Write
 	    		 .named("WritetoBigQuery")
-	    		 .to("syw-ors-1226:ors_logs.ors_client_requests_daily_partitioned")
+	    		 .to("syw-ors-1226:ors_logs.ors_issuance_logs_daily_partitioned")
 	    		 .withSchema(schema)
 	    		 //.withoutValidation()
 	    		 .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND)
