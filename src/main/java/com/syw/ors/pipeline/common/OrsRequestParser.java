@@ -14,7 +14,7 @@ import org.json.simple.parser.ParseException;
 import com.google.cloud.dataflow.sdk.values.KV;
 
 
-public class OrsRequestParser implements Constants{
+public class OrsRequestParser implements ProdConstants{
 	
 	private static JSONParser jsonParser =  new JSONParser();
 	
