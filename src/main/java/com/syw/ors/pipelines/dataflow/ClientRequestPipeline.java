@@ -17,6 +17,7 @@ import com.google.cloud.dataflow.sdk.transforms.Filter;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
 import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
+import com.syw.ors.pipeline.common.ClientRequestParserBeforePublishDoFn;
 import com.syw.ors.pipeline.common.OrsClientRequestToStringDoFn;
 import com.syw.ors.pipeline.common.OrsRequestFilterPredicate;
 import com.syw.ors.pipeline.common.OrsRequestParserTableRowDoFn;
@@ -65,14 +66,17 @@ public class ClientRequestPipeline implements ProdConstants{
    
 		//convert to table rows
 	    PCollection<TableRow> tableRowCollection = filteredRecordCollections.apply(
-	    		ParDo.named("RequestParser").of(new OrsRequestParserTableRowDoFn()));
+	    		ParDo.named("ConvertToTableRows").of(new OrsRequestParserTableRowDoFn()));
 	    
 	    //converting to string to publish rows
 	    PCollection<String> messageStrCollection = filteredRecordCollections.apply(
 	    		ParDo.named("convertKVtoString").of(new OrsClientRequestToStringDoFn()));
 	    
+	    PCollection<String> parsedmessageStrCollection = messageStrCollection.apply(
+	    		ParDo.named("ParseRequestBeforePublish").of(new ClientRequestParserBeforePublishDoFn()));
+	    
 	    //publishing rows
-		messageStrCollection.apply(
+	    parsedmessageStrCollection.apply(
 				PubsubIO.Write.named("OutputStream").topic("projects" + "/" + PROJECT_ID_PROD + "/" + "topics" + "/" + PUBSUB_CLIENT_REQUESTS_TOPIC)); 
 	    
 	    tableRowCollection.apply(

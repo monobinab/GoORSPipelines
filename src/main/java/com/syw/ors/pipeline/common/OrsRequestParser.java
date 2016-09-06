@@ -33,10 +33,7 @@ public class OrsRequestParser implements ProdConstants{
 	
 	public static List<KV<String, String>> convertRequestToRecordMap(String line) throws ParseException {
 		List<KV<String, String>> recordList = new ArrayList<>();
-		/*if(line == null || line.trim().isEmpty()){
-			return recordList;
-		}*/
-		
+				
 		JSONObject jsonObject;
 		
 		try{
