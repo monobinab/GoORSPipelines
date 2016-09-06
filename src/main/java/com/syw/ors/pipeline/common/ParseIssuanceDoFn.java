@@ -21,3 +21,4 @@ public class ParseIssuanceDoFn  extends DoFn<String, List<KV<String, String>>>{
 	}
 
 	}
+

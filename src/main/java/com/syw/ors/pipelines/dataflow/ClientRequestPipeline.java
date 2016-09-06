@@ -17,6 +17,7 @@ import com.google.cloud.dataflow.sdk.transforms.Filter;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
 import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
+import com.syw.ors.pipeline.common.OrsClientRequestToStringDoFn;
 import com.syw.ors.pipeline.common.OrsRequestFilterPredicate;
 import com.syw.ors.pipeline.common.OrsRequestParserTableRowDoFn;
 import com.syw.ors.pipeline.common.ParseRequestDoFn;
@@ -66,7 +67,13 @@ public class ClientRequestPipeline implements ProdConstants{
 	    PCollection<TableRow> tableRowCollection = filteredRecordCollections.apply(
 	    		ParDo.named("RequestParser").of(new OrsRequestParserTableRowDoFn()));
 	    
-	     
+	    //converting to string to publish rows
+	    PCollection<String> messageStrCollection = filteredRecordCollections.apply(
+	    		ParDo.named("convertKVtoString").of(new OrsClientRequestToStringDoFn()));
+	    
+	    //publishing rows
+		messageStrCollection.apply(
+				PubsubIO.Write.named("OutputStream").topic("projects" + "/" + PROJECT_ID_PROD + "/" + "topics" + "/" + PUBSUB_CLIENT_REQUESTS_TOPIC)); 
 	    
 	    tableRowCollection.apply(
 	    		BigQueryIO.Write

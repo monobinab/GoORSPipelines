@@ -6,14 +6,18 @@ import com.google.api.services.bigquery.model.TableRow;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.io.PubsubIO;
+import com.google.cloud.dataflow.sdk.io.TextIO;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
 import com.google.cloud.dataflow.sdk.options.DataflowPipelineOptions;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.runners.BlockingDataflowPipelineRunner;
 import com.google.cloud.dataflow.sdk.transforms.Filter;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
+import com.google.cloud.dataflow.sdk.transforms.SerializableFunction;
 import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
+import com.google.cloud.dataflow.sdk.values.PDone;
+import com.syw.ors.pipeline.common.OrsClientRequestToStringDoFn;
 import com.syw.ors.pipeline.common.OrsIssuanceSchemaCreate;
 import com.syw.ors.pipeline.common.OrsRequestFilterPredicate;
 import com.syw.ors.pipeline.common.OrsRequestParserTableRowDoFn;
@@ -52,10 +56,15 @@ public class IssuancePipeline  implements ProdConstants{
 		PCollection<List<KV<String, String>>> filteredRecordCollections = parsedRecordCollection.apply(
 				Filter.byPredicate( new OrsRequestFilterPredicate()));
 
-		    
+		
+		
 		//convert to table rows
 	    PCollection<TableRow> tableRowCollection = filteredRecordCollections.apply(
-	    		ParDo.named("IssuanceParser").of(new OrsRequestParserTableRowDoFn()));
+	    		ParDo.named("convertKVtoTableRow").of(new OrsRequestParserTableRowDoFn()));
+	    
+	    
+	    
+ 
 	    
 	   //insert into big query	    
 	    tableRowCollection.apply(
