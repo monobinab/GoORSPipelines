@@ -1,4 +1,4 @@
-package com.syw.ors.pipeline.common;
+package com.syw.ors.common;
 
 import java.util.List;
 

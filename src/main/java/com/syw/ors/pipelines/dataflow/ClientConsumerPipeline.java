@@ -16,10 +16,10 @@ import com.google.cloud.dataflow.sdk.runners.BlockingDataflowPipelineRunner;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 import com.google.cloud.dataflow.sdk.values.PDone;
-import com.syw.ors.pipeline.common.OrsClientStringToRowConverter;
-import com.syw.ors.pipeline.common.OrsIssuanceSchemaCreate;
-import com.syw.ors.pipeline.common.OrsRequestParserTableRowDoFn;
-import com.syw.ors.pipeline.common.ProdConstants;
+import com.syw.ors.common.OrsClientStringToRowConverter;
+import com.syw.ors.common.OrsIssuanceSchemaCreate;
+import com.syw.ors.common.OrsRequestParserTableRowDoFn;
+import com.syw.ors.common.ProdConstants;
 
 public class ClientConsumerPipeline   implements ProdConstants{
 	public static void main(String[] args) {

@@ -17,12 +17,12 @@ import com.google.cloud.dataflow.sdk.transforms.SerializableFunction;
 import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 import com.google.cloud.dataflow.sdk.values.PDone;
-import com.syw.ors.pipeline.common.OrsClientRequestToStringDoFn;
-import com.syw.ors.pipeline.common.OrsIssuanceSchemaCreate;
-import com.syw.ors.pipeline.common.OrsRequestFilterPredicate;
-import com.syw.ors.pipeline.common.OrsRequestParserTableRowDoFn;
-import com.syw.ors.pipeline.common.ParseIssuanceDoFn;
-import com.syw.ors.pipeline.common.ProdConstants;
+import com.syw.ors.common.OrsClientRequestToStringDoFn;
+import com.syw.ors.common.OrsIssuanceSchemaCreate;
+import com.syw.ors.common.OrsRequestFilterPredicate;
+import com.syw.ors.common.OrsRequestParserTableRowDoFn;
+import com.syw.ors.common.ParseIssuanceDoFn;
+import com.syw.ors.common.ProdConstants;
 
 public class IssuancePipeline  implements ProdConstants{
 	@SuppressWarnings("unused")

@@ -17,13 +17,13 @@ import com.google.cloud.dataflow.sdk.transforms.Filter;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
 import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.syw.ors.pipeline.common.ClientRequestParserBeforePublishDoFn;
-import com.syw.ors.pipeline.common.OrsClientRequestToStringDoFn;
-import com.syw.ors.pipeline.common.OrsRequestFilterPredicate;
-import com.syw.ors.pipeline.common.OrsRequestParserTableRowDoFn;
-import com.syw.ors.pipeline.common.ParseRequestDoFn;
-import com.syw.ors.pipeline.common.ProdConstants;
-import com.syw.ors.pipeline.common.OrsRequestSchemaCreate;
+import com.syw.ors.common.ClientRequestParserBeforePublishDoFn;
+import com.syw.ors.common.OrsClientRequestToStringDoFn;
+import com.syw.ors.common.OrsRequestFilterPredicate;
+import com.syw.ors.common.OrsRequestParserTableRowDoFn;
+import com.syw.ors.common.OrsRequestSchemaCreate;
+import com.syw.ors.common.ParseRequestDoFn;
+import com.syw.ors.common.ProdConstants;
 
 //import PCollection;
 

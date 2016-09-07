@@ -1,4 +1,4 @@
-package com.syw.ors.pipeline.common;
+package com.syw.ors.common;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import com.google.api.services.bigquery.model.TableFieldSchema;
 import com.google.api.services.bigquery.model.TableSchema;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
 import com.google.cloud.dataflow.sdk.options.DataflowPipelineOptions;
-import com.syw.ors.pipeline.common.ProdConstants;
+import com.syw.ors.common.ProdConstants;
 
 public class OrsRequestSchemaCreate implements ProdConstants{
 	

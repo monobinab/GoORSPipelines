@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.syw.ors.pipeline.common;
+package com.syw.ors.common;
 
 import com.google.api.services.pubsub.Pubsub;
 import com.google.api.services.pubsub.model.PublishRequest;
