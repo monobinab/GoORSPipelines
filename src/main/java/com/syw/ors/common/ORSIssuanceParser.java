@@ -33,9 +33,7 @@ public class ORSIssuanceParser implements ProdConstants {
 	
 	public static List<KV<String, String>> convertIssuanceToRecordMap(String line) throws ParseException {
 		List<KV<String, String>> recordList = new ArrayList<>();
-		/*if(line == null || line.trim().isEmpty()){
-			return recordList;
-		}*/
+		
 		
 		JSONObject jsonObject;
 		
@@ -48,8 +46,7 @@ public class ORSIssuanceParser implements ProdConstants {
 			return recordList;
 		}
 		
-		//JSONObject httpRequestObject = (JSONObject) jsonObject.get("httpRequest");
-		//long statusCode = (long) httpRequestObject.get("status");
+		
 		if(jsonObject!=null){
 			String insertId = (String) jsonObject.get("insertId");
 			JSONObject protoPayloadObject = (JSONObject) jsonObject.get("protoPayload");
@@ -65,9 +62,7 @@ public class ORSIssuanceParser implements ProdConstants {
 					for(Object object : protoPayloadObjectline){ //for each				
 						JSONObject lineJsonObject = (JSONObject) object;
 						String logMessage = (String) lineJsonObject.get("logMessage");
-						//String severity = (String) lineJsonObject.get("severity");
-						//String time = (String) lineJsonObject.get("time");
-						//String startTime = (String) lineJsonObject.get("startTime");
+		
 				
 						if(logMessage!=null && logMessage.contains("issuance")){
 							KV<String, String> versionKV = KV.of(VERSION_ID, versionId);
@@ -85,11 +80,9 @@ public class ORSIssuanceParser implements ProdConstants {
 												
 							//String dataJson = "";					
 							String [] strArray = logMessage.split(",");
-							//System.out.println(Arrays.toString(strArray)) ;
-							//if(strArray.length==14){
+							
 							try{
-								//dataJson = strArray[1].trim();
-								//System.out.println("Reached inside loop");
+								
 								String logType = "";
 								logType = strArray[0].trim();
 								KV<String, String> logTypeKV = KV.of(LOG_TYPE, logType);
@@ -148,24 +141,20 @@ public class ORSIssuanceParser implements ProdConstants {
 								recordList.add(maxCatalinaOffersKV);
 							}catch (Exception e)
 							{
-							//System.out.println("Error: " + e.getMessage());
 							continue;
 							}
-							//return recordList;
-							
-					
+												
 							long currentTime = System.currentTimeMillis();
 							KV<String, String> currentTimeKV = KV.of(LOAD_TIME, Long.toString(currentTime));
 							recordList.add(currentTimeKV);
 					
-							//String currentUser = System.getProperty("user.name");		
 							return recordList;
 				}					
 			}
 		}
 		}
 		}
-		//System.out.println("insertId: " + insertId + "\n" + "statusCode: " + statusCode + "\n" + "protoPayloadline: " + protoPayloadObjectline);
+		
 		return recordList;
 	}
 		
