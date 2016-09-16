@@ -12,35 +12,36 @@ import com.google.cloud.dataflow.sdk.transforms.ParDo;
 import com.syw.ors.utilities.NetClient;
 
 public class PerformanceTestRequestSender {
-    public static class SendRequests extends DoFn<TableRow, String> {
-	private static final long serialVersionUID = 1L;
-	String URL;
-
-	@Override
-	public void processElement(ProcessContext c) {
-	    String json = (String) c.element().get("data_json");
-	    // "https://syw-ors-qa.appspot.com"
-	    NetClient.PutHTTPS(URL, json);
-	    c.output(json);
-	}
-
-	public SendRequests(String URL) {
-	    this.URL = URL;
-	}
+    
+	public static class SendRequests extends DoFn<TableRow, String> {
+		private static final long serialVersionUID = 1L;
+		String URL;
+	
+		@Override
+		public void processElement(ProcessContext c) {
+		    String json = (String) c.element().get("data_json");
+		    // "https://syw-ors-qa.appspot.com"
+		    NetClient.PutHTTPS(URL, json);
+		    c.output(json);
+		}
+	
+		public SendRequests(String URL) {
+		    this.URL = URL;
+		}
     }
 
     public static interface PerformanceTestRequestSenderOptions extends PipelineOptions {
-	@Description("URL")
-	@Default.String("https://syw-ors-qa.appspot.com")
-	String getURL();
-
-	void setURL(String URL);
-
-	@Description("requestDate")
-	@Default.String("20160816")
-	String getRequestDate();
-
-	void setRequestDate(String requestDate);
+		@Description("URL")
+		@Default.String("https://syw-ors-qa.appspot.com")
+		String getURL();
+	
+		void setURL(String URL);
+	
+		@Description("requestDate")
+		@Default.String("20160816")
+		String getRequestDate();
+	
+		void setRequestDate(String requestDate);
     }
 
     public static void main(String[] args) {

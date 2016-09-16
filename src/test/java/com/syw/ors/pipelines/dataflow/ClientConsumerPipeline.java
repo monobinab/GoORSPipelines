@@ -16,6 +16,7 @@ import com.google.cloud.dataflow.sdk.runners.BlockingDataflowPipelineRunner;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 import com.google.cloud.dataflow.sdk.values.PDone;
+import com.syw.ors.common.OrsClientRequestPutDoFn;
 import com.syw.ors.common.OrsClientStringToRowConverter;
 import com.syw.ors.common.OrsIssuanceSchemaCreate;
 import com.syw.ors.common.OrsRequestParserTableRowDoFn;
@@ -40,7 +41,10 @@ public class ClientConsumerPipeline   implements ProdConstants{
 	
 	    PCollection<String> clientRequestStr = p.apply(
     		PubsubIO.Read.named("ReadFromPubSub").topic("projects" + "/" + PROJECT_ID_PROD + "/" + "topics" + "/" + PUBSUB_CLIENT_REQUESTS_TOPIC));
-    		
+    	
+	    clientRequestStr.apply(
+	    		ParDo.named("OrsClientPut").of(new OrsClientRequestPutDoFn()));
+	    
 	    PCollection<TableRow> tableRowCollection = clientRequestStr.apply(
 	    		ParDo.named("convertStringtoTableRow").of(new OrsClientStringToRowConverter()));
 	    

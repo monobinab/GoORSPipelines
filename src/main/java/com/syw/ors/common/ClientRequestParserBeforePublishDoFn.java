@@ -7,7 +7,7 @@ import com.google.cloud.dataflow.sdk.transforms.DoFn;
 
 
 
-public class ClientRequestParserBeforePublishDoFn   extends DoFn<String, String>{
+public class ClientRequestParserBeforePublishDoFn extends DoFn<String, String>{
 	private static final long serialVersionUID = 6038769171360330879L;
 
 	@Override

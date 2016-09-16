@@ -18,10 +18,7 @@ public class OrsIssuanceSchemaCreate implements ProdConstants{
 	    FIELDS.add(new TableFieldSchema().setName(INSERT_ID).setType(DATA_TYPE_STRING));
 	    FIELDS.add(new TableFieldSchema().setName(REQUEST_STATUS).setType(DATA_TYPE_STRING));
 	    FIELDS.add(new TableFieldSchema().setName(LOG_TYPE).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(DATA_JSON).setType(DATA_TYPE_STRING));
 	    FIELDS.add(new TableFieldSchema().setName(LOAD_TIME).setType(DATA_TYPE_STRING));	  
-	    
-	    FIELDS.add(new TableFieldSchema().setName(ISSUE_TYPE).setType(DATA_TYPE_STRING));
 	    FIELDS.add(new TableFieldSchema().setName(MEMBER_ID).setType(DATA_TYPE_STRING));
 	    FIELDS.add(new TableFieldSchema().setName(ISSUE_TIME).setType(DATA_TYPE_STRING));
 	    FIELDS.add(new TableFieldSchema().setName(OFFER_CODE).setType(DATA_TYPE_STRING));

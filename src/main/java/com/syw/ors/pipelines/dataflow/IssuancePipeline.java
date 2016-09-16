@@ -6,23 +6,22 @@ import com.google.api.services.bigquery.model.TableRow;
 import com.google.cloud.dataflow.sdk.Pipeline;
 import com.google.cloud.dataflow.sdk.io.BigQueryIO;
 import com.google.cloud.dataflow.sdk.io.PubsubIO;
-import com.google.cloud.dataflow.sdk.io.TextIO;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
 import com.google.cloud.dataflow.sdk.options.DataflowPipelineOptions;
 import com.google.cloud.dataflow.sdk.options.PipelineOptionsFactory;
 import com.google.cloud.dataflow.sdk.runners.BlockingDataflowPipelineRunner;
 import com.google.cloud.dataflow.sdk.transforms.Filter;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
-import com.google.cloud.dataflow.sdk.transforms.SerializableFunction;
 import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.google.cloud.dataflow.sdk.values.PDone;
-import com.syw.ors.common.OrsClientRequestToStringDoFn;
+import com.syw.ors.common.OrsErrorIssuanceSchemaCreate;
+import com.syw.ors.common.OrsIssuanceErrorFilterPredicate;
+import com.syw.ors.common.OrsIssuanceFilterPredicate;
 import com.syw.ors.common.OrsIssuanceSchemaCreate;
-import com.syw.ors.common.OrsRequestFilterPredicate;
 import com.syw.ors.common.OrsRequestParserTableRowDoFn;
 import com.syw.ors.common.ParseIssuanceDoFn;
 import com.syw.ors.common.ProdConstants;
+
 
 public class IssuancePipeline  implements ProdConstants{
 	@SuppressWarnings("unused")
@@ -52,21 +51,24 @@ public class IssuancePipeline  implements ProdConstants{
 	    PCollection<List<KV<String, String>>> parsedRecordCollection = rawLines.apply(
 	    		ParDo.named("ParseIssuance").of(new ParseIssuanceDoFn()));
 	    	    
-		//filter
+		//filter good records
 		PCollection<List<KV<String, String>>> filteredRecordCollections = parsedRecordCollection.apply(
-				Filter.byPredicate( new OrsRequestFilterPredicate()));
+				Filter.byPredicate( new OrsIssuanceFilterPredicate()));
 
+		//filter error records
+		PCollection<List<KV<String, String>>> errorRecordCollections = parsedRecordCollection.apply(
+				Filter.byPredicate( new OrsIssuanceErrorFilterPredicate()));
 		
-		
-		//convert to table rows
+		//convert good records to table rows
 	    PCollection<TableRow> tableRowCollection = filteredRecordCollections.apply(
 	    		ParDo.named("convertKVtoTableRow").of(new OrsRequestParserTableRowDoFn()));
 	    
+	    //convert error records to table rows
+	    PCollection<TableRow> errortableRowCollection = errorRecordCollections.apply(
+	    		ParDo.named("convertKVtoTableRow").of(new OrsRequestParserTableRowDoFn()));
+
 	    
-	    
- 
-	    
-	   //insert into big query	    
+	   //insert good records into big query	
 	    tableRowCollection.apply(
 	    		BigQueryIO.Write
 	    		 .named("WritetoBigQuery")
@@ -75,7 +77,17 @@ public class IssuancePipeline  implements ProdConstants{
 	    		 //.withoutValidation()
 	    		 .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND)
 	    		 .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED));
-	    		 	    		 
+	    
+	  //insert bad records into big query	
+	    errortableRowCollection.apply(
+	    		BigQueryIO.Write
+	    		 .named("WritetoBigQuery")
+	    		 .to(PROJECT_ID_PROD + ":" + DATASET_ID_PROD + "." + ERROR_ISSUANCE_TABLE_ID_PROD)
+	    		 .withSchema(OrsErrorIssuanceSchemaCreate.createSchema())
+	    		 //.withoutValidation()
+	    		 .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND)
+	    		 .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED));
+	    
 	    p.run(); 
 				
 	}

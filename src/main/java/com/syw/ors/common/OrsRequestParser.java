@@ -85,7 +85,7 @@ public class OrsRequestParser implements ProdConstants{
 					
 							String dataJson = "";					
 							String [] strArray = logMessage.split("request,");
-							if(strArray.length==2){
+							if(strArray!=null && strArray.length==2 && strArray[1]!=null){
 								dataJson = strArray[1].trim();
 								KV<String, String> dataJsonKV = KV.of(DATA_JSON, dataJson);
 								recordList.add(dataJsonKV);
