@@ -5,10 +5,17 @@ public interface QAConstants {
 	public static final String PROJECT_ID_QA = "syw-ors-qa";
 	public static final String TEMP_LOCATION_QA = "gs://ms_orslogs/temp";
 	public static final String STAGING_LOCATION_QA = "gs://ms_orslogs/staging";
-	public static final String PUBSUB_TOPIC_TO_READ_QA = "repository-changes.default";
+	public static final String PUBSUB_REPOSITORY_TOPIC = "repository-changes.default";
 	public static final String DATASET_ID_QA = "ors_logs";
-	public static final String ISSUANCE_TABLE_ID_QA = "ors_issuance_logs_daily_partitioned";
+	public static final String ISSUANCE_TABLE_ID_QA = "ors_issuance_logs_master";
 	public static final String ERROR_ISSUANCE_TABLE_ID_QA = "ors_issuance_error_log";
+	public static final String SERVICE_URL_STR = "https://syw-ors-qa.appspot.com";
+	
+	
+	public static final String ISSUANCE_TABLE_PATH = PROJECT_ID_QA + ":" + DATASET_ID_QA + "." + ISSUANCE_TABLE_ID_QA;
+	public static final String ISSUANCE_ERROR_TABLE_PATH = PROJECT_ID_QA + ":" + DATASET_ID_QA + "." + ERROR_ISSUANCE_TABLE_ID_QA;
+		
+	public static final String PUBSUB_REPOSITORY_TOPIC_PATH = "projects" + "/" + PROJECT_ID_QA + "/" + "topics" + "/" + PUBSUB_REPOSITORY_TOPIC;
 	
 	public static final String RAW_DATA = "raw_data";
 	public static final String ERROR_LOG = "error_log";

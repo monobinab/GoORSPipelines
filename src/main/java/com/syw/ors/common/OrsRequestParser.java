@@ -1,7 +1,4 @@
 package com.syw.ors.common;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,36 +11,24 @@ import org.json.simple.parser.ParseException;
 import com.google.cloud.dataflow.sdk.values.KV;
 
 
-public class OrsRequestParser implements ProdConstants{
+public class OrsRequestParser implements Constants{
 	
-	private static JSONParser jsonParser =  new JSONParser();
+	private JSONParser jsonParser;
 	
-	public static void main(String[] args) throws IOException, ParseException {
-			String filePath = "/Users/msaha/Documents/data/input/ors_request_consumed_datafile.txt";
-			FileReader reader = new FileReader(filePath);
-			BufferedReader bufferReader = new BufferedReader(reader);						
-			String line = null;			
-			while( (line=bufferReader.readLine()) != null){
-				System.out.println(convertRequestToRecordMap(line));
-			}
-			bufferReader.close();
-			reader.close();
+	public OrsRequestParser(){
+		jsonParser =  new JSONParser();
 	}
-	
-	
-	public static List<KV<String, String>> convertRequestToRecordMap(String line) throws ParseException {
+		
+	public List<KV<String, String>> convertRequestToRecordMap(String line) throws ParseException {
 		List<KV<String, String>> recordList = new ArrayList<>();
 				
 		JSONObject jsonObject;
 		
-		try{
-			jsonObject = (JSONObject) jsonParser.parse(line);
-		}catch(Exception e){
-			System.out.println("line: " + line);
-			System.out.println("Error: " + e.getMessage());
-			
+		if (!line.contains("request")){
 			return recordList;
 		}
+	
+		jsonObject = (JSONObject) jsonParser.parse(line);
 		
 		//JSONObject httpRequestObject = (JSONObject) jsonObject.get("httpRequest");
 		//long statusCode = (long) httpRequestObject.get("status");

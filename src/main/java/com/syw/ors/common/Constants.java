@@ -1,17 +1,8 @@
 package com.syw.ors.common;
 
-public interface ProdConstants {
+public interface Constants {
 
 	//Setting up Big Query and PubSub PArameters
-	public static final String PROJECT_ID_PROD = "syw-ors-1226";
-	public static final String PUBSUB_TOPIC_TO_READ_PROD = "repository-changes.default";
-	public static final String PUBSUB_CLIENT_REQUESTS_TOPIC = "ors_client_requests";
-	public static final String STAGING_LOCATION_PROD = "gs://ms_orslog/staging";
-	public static final String TEMP_LOCATION_PROD = "gs://ms_orslog/temp";
-	public static final String DATASET_ID_PROD = "ors_logs";
-	public static final String REQUEST_TABLE_ID_PROD = "ors_client_requests_daily_partitioned";
-	public static final String ISSUANCE_TABLE_ID_PROD = "ors_issuance_logs_master";
-	public static final String ERROR_ISSUANCE_TABLE_ID_PROD = "ors_issuance_error_log";
 	
 	public static final String RAW_DATA = "raw_data";
 	public static final String ERROR_LOG = "error_log";

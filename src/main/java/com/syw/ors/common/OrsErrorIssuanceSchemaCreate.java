@@ -6,7 +6,7 @@ import java.util.List;
 import com.google.api.services.bigquery.model.TableFieldSchema;
 import com.google.api.services.bigquery.model.TableSchema;
 
-public class OrsErrorIssuanceSchemaCreate implements ProdConstants{
+public class OrsErrorIssuanceSchemaCreate implements Constants{
 	private static final String DATA_TYPE_STRING = "STRING";
 	
 	

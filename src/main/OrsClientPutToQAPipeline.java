@@ -14,10 +14,10 @@ import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
 import com.syw.ors.common.OrsClientRequestPutDoFn;
 import com.syw.ors.common.ParseIssuanceDoFn;
-import com.syw.ors.common.ProdConstants;
+import com.syw.ors.common.Constants;
 import com.syw.ors.common.QAConstants;
 
-public class OrsClientPutToQAPipeline implements ProdConstants{
+public class OrsClientPutToQAPipeline implements Constants{
 	public static void main(String[] args) {
 		DataflowPipelineOptions options = PipelineOptionsFactory.create().as(DataflowPipelineOptions.class);
 		options.setRunner(BlockingDataflowPipelineRunner.class);
@@ -31,11 +31,8 @@ public class OrsClientPutToQAPipeline implements ProdConstants{
 	    Pipeline p = Pipeline.create(options);
 	    
 	        
-	    //PCollection<String> rawLines = p.apply(
-	    		//PubsubIO.Read.named("ReadFromPubSub").topic("projects" + "/" + PROJECT_ID_PROD + "/" + "topics" + "/" + PUBSUB_CLIENT_REQUESTS_TOPIC));
-	    
 	    PCollection<String> rawLines = p.apply(
-	    		PubsubIO.Read.named("ReadFromPubSub").topic("projects" + "/" + PROJECT_ID_PROD + "/" + "topics" + "/" + PUBSUB_CLIENT_REQUESTS_TOPIC));
+	    		PubsubIO.Read.named("ReadFromPubSub").topic(PUBSUB_CLIENT_REQUESTS_TOPIC_PATH));
 	  
 	    //apply Pipeline transforms to parse raw lines
 	    rawLines.apply(

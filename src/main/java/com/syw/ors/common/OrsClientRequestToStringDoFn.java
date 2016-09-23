@@ -17,12 +17,6 @@ public class OrsClientRequestToStringDoFn  extends DoFn<List<KV<String, String>>
 	public void processElement(ProcessContext c) throws ParseException {
 		List<KV<String, String>> record = c.element();	
 		
-		//StringBuffer messageStr = new StringBuffer();
-		/*
-		for(KV<String, String> col: record){
-			messageStr.set(col.getValue());
-		}
-		*/
 		ArrayList<KV<String, String>> list = (ArrayList<KV<String, String>>) record;
 		c.output(list.toString());
 	}

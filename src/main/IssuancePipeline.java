@@ -14,20 +14,16 @@ import com.google.cloud.dataflow.sdk.transforms.Filter;
 import com.google.cloud.dataflow.sdk.transforms.ParDo;
 import com.google.cloud.dataflow.sdk.values.KV;
 import com.google.cloud.dataflow.sdk.values.PCollection;
-import com.syw.ors.common.ClientRequestParserBeforePublishDoFn;
-import com.syw.ors.common.OrsClientRequestToStringDoFn;
-import com.syw.ors.common.OrsRequestFilterPredicate;
+import com.syw.ors.common.OrsErrorIssuanceSchemaCreate;
+import com.syw.ors.common.OrsIssuanceErrorFilterPredicate;
+import com.syw.ors.common.OrsIssuanceFilterPredicate;
+import com.syw.ors.common.OrsIssuanceSchemaCreate;
 import com.syw.ors.common.OrsRequestParserTableRowDoFn;
-import com.syw.ors.common.OrsRequestSchemaCreate;
-import com.syw.ors.common.ParseRequestDoFn;
-import com.syw.ors.common.ProdConstants;
+import com.syw.ors.common.ParseIssuanceDoFn;
+import com.syw.ors.common.Constants;
 
-//import PCollection;
 
-public class ClientRequestPipeline implements ProdConstants{
-	
-	//private static final String DATA_TYPE_STRING = "STRING";
-	
+public class IssuancePipeline  implements Constants{
 	@SuppressWarnings("unused")
 	private interface StreamingExtractOptions 
 		extends BigQueryOptions, DataflowPipelineOptions{		
@@ -47,45 +43,49 @@ public class ClientRequestPipeline implements ProdConstants{
 	    // Create the Pipeline object with the options we defined above.
 	    Pipeline p = Pipeline.create(options);
 	    
-	   	    
-	        
+	    	    
 	    PCollection<String> rawLines = p.apply(
-	    		PubsubIO.Read.named("ReadFromPubSub").topic("projects" + "/" + PROJECT_ID_PROD + "/" + "topics" + "/" + PUBSUB_TOPIC_TO_READ_PROD));
+	    		PubsubIO.Read.named("ReadFromPubSub").topic("projects" + "/" + PROJECT_ID_PROD + "/" + "topics" + "/" + PUBSUB_REPOSITORY_TOPIC));
 	    
 	    //apply Pipeline transforms to parse raw lines
 	    PCollection<List<KV<String, String>>> parsedRecordCollection = rawLines.apply(
-	    		ParDo.named("ParseRequest").of(new ParseRequestDoFn()));
+	    		ParDo.named("ParseIssuance").of(new ParseIssuanceDoFn()));
 	    	    
-		//filter
+		//filter good records
 		PCollection<List<KV<String, String>>> filteredRecordCollections = parsedRecordCollection.apply(
-				Filter.byPredicate( new OrsRequestFilterPredicate()));
+				Filter.byPredicate(new OrsIssuanceFilterPredicate()));
 
-   
-		//convert to table rows
+		//filter error records
+		PCollection<List<KV<String, String>>> errorRecordCollections = parsedRecordCollection.apply(
+				Filter.byPredicate(new OrsIssuanceErrorFilterPredicate()));
+		
+		//convert good records to table rows
 	    PCollection<TableRow> tableRowCollection = filteredRecordCollections.apply(
-	    		ParDo.named("ConvertToTableRows").of(new OrsRequestParserTableRowDoFn()));
+	    		ParDo.named("convertKVtoTableRow").of(new OrsRequestParserTableRowDoFn()));
 	    
-	    //converting to string to publish rows
-	    PCollection<String> messageStrCollection = filteredRecordCollections.apply(
-	    		ParDo.named("convertKVtoString").of(new OrsClientRequestToStringDoFn()));
+	    //convert error records to table rows
+	    PCollection<TableRow> errortableRowCollection = errorRecordCollections.apply(
+	    		ParDo.named("convertKVtoTableRow").of(new OrsRequestParserTableRowDoFn()));
+
 	    
-	    PCollection<String> parsedmessageStrCollection = messageStrCollection.apply(
-	    		ParDo.named("ParseRequestBeforePublish").of(new ClientRequestParserBeforePublishDoFn()));
-	    
-	    //publishing rows
-	    parsedmessageStrCollection.apply(
-				PubsubIO.Write.named("OutputStream").topic("projects" + "/" + PROJECT_ID_PROD + "/" + "topics" + "/" + PUBSUB_CLIENT_REQUESTS_TOPIC)); 
-	    
+	   //insert good records into big query	
 	    tableRowCollection.apply(
 	    		BigQueryIO.Write
 	    		 .named("WritetoBigQuery")
-	    		 .to(PROJECT_ID_PROD + ":" + DATASET_ID_PROD + "." + REQUEST_TABLE_ID_PROD)
-	    		 .withSchema(OrsRequestSchemaCreate.createSchema())
-	    		 //.withoutValidation()
+	    		 .to(ISSUANCE_TABLE_PATH)
+	    		 .withSchema(OrsIssuanceSchemaCreate.createSchema())
 	    		 .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND)
-	    		 .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
-	    		 );
-	    		 	    		 
+	    		 .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED));
+	    
+	  //insert bad records into big query	
+	    errortableRowCollection.apply(
+	    		BigQueryIO.Write
+	    		 .named("WritetoBigQuery")
+	    		 .to(ISSUANCE_ERROR_TABLE_PATH)
+	    		 .withSchema(OrsErrorIssuanceSchemaCreate.createSchema())
+	    		 .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND)
+	    		 .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED));
+	    
 	    p.run(); 
 				
 	}

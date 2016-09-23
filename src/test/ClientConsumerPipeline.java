@@ -20,9 +20,9 @@ import com.syw.ors.common.OrsClientRequestPutDoFn;
 import com.syw.ors.common.OrsClientStringToRowConverter;
 import com.syw.ors.common.OrsIssuanceSchemaCreate;
 import com.syw.ors.common.OrsRequestParserTableRowDoFn;
-import com.syw.ors.common.ProdConstants;
+import com.syw.ors.common.Constants;
 
-public class ClientConsumerPipeline   implements ProdConstants{
+public class ClientConsumerPipeline   implements Constants{
 	public static void main(String[] args) {
 		
 		//create Data flow Pipeline Options 

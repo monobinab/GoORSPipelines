@@ -6,33 +6,24 @@ import java.util.List;
 import com.google.api.services.bigquery.model.TableFieldSchema;
 import com.google.api.services.bigquery.model.TableSchema;
 
-public class OrsIssuanceSchemaCreate implements ProdConstants{
+public class OrsIssuanceSchemaCreate implements Constants{
 	private static final String DATA_TYPE_STRING = "STRING";
+	
+	public static final String[] schema = {
+			VERSION_ID, START_TIME, INSERT_ID, REQUEST_STATUS, LOG_TYPE, LOAD_TIME, MEMBER_ID, ISSUE_TIME, 
+			OFFER_CODE, OFFER_TYPE, OFFER_NAME, AMOUNT_TYPE, AMOUNT, SEC_AMOUNT_TYPE, SEC_AMOUNT, PRODUCT_GROUP,
+			PRODUCT_SUB_GROUP, NUMBER_OF_OFFERS, MAX_CATALINA_OFFERS
+	};
 	
 	//create table schema where data will be inserted
 	public static TableSchema createSchema() {
 		
 		List<TableFieldSchema> FIELDS = new ArrayList<>();
-	    FIELDS.add(new TableFieldSchema(). setName(VERSION_ID).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(START_TIME).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(INSERT_ID).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(REQUEST_STATUS).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(LOG_TYPE).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(LOAD_TIME).setType(DATA_TYPE_STRING));	  
-	    FIELDS.add(new TableFieldSchema().setName(MEMBER_ID).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(ISSUE_TIME).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(OFFER_CODE).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(OFFER_TYPE).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(OFFER_NAME).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(AMOUNT_TYPE).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(AMOUNT).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(SEC_AMOUNT_TYPE).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(SEC_AMOUNT).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(PRODUCT_GROUP).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(PRODUCT_SUB_GROUP).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(NUMBER_OF_OFFERS).setType(DATA_TYPE_STRING));
-	    FIELDS.add(new TableFieldSchema().setName(MAX_CATALINA_OFFERS).setType(DATA_TYPE_STRING));
-	    
+		
+		for(String fieldName : schema){
+			FIELDS.add(new TableFieldSchema(). setName(fieldName).setType(DATA_TYPE_STRING));
+		}
+		
 	    TableSchema SCHEMA = new TableSchema().setFields(FIELDS);
     
         return SCHEMA;

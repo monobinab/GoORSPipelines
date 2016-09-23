@@ -7,9 +7,9 @@ import com.google.api.services.bigquery.model.TableFieldSchema;
 import com.google.api.services.bigquery.model.TableSchema;
 import com.google.cloud.dataflow.sdk.options.BigQueryOptions;
 import com.google.cloud.dataflow.sdk.options.DataflowPipelineOptions;
-import com.syw.ors.common.ProdConstants;
+import com.syw.ors.common.Constants;
 
-public class OrsRequestSchemaCreate implements ProdConstants{
+public class OrsRequestSchemaCreate implements Constants{
 	
 	private static final String DATA_TYPE_STRING = "STRING";
 	
