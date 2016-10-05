@@ -25,7 +25,8 @@ public class ORSIssuanceParser implements Constants {
 		jsonParser =  new JSONParser();
 	}
 	
-		
+
+
 	
 	public List<List<KV<String, String>>> convertIssuanceToRecordMap(String line) throws ParseException {
 		List<List<KV<String, String>>> recordListSet = new ArrayList<>(); //create another container list to keep multiple recordList out of a single input		
@@ -37,7 +38,7 @@ public class ORSIssuanceParser implements Constants {
 			return recordListSet;
 		}
 
-
+		
 		jsonObject = (JSONObject) jsonParser.parse(line);
 
 		if(jsonObject!=null){
@@ -89,7 +90,8 @@ public class ORSIssuanceParser implements Constants {
 												KV<String, String> requestStatusKV = KV.of(REQUEST_STATUS, requestStatus1);
 												recordList.add(requestStatusKV);					
 
-												String [] strArray = logMessage.split(",");
+												String [] strArray = logMessage.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+												//String [] strArray = logMessage.split(",");
 
 												try{
 													KV<String, String> logTypeKV = null;
@@ -261,7 +263,11 @@ public class ORSIssuanceParser implements Constants {
 
 		return recordListSet;
 	}
-	
-	
 		
+		
+	
+
 }
+	
+	
+

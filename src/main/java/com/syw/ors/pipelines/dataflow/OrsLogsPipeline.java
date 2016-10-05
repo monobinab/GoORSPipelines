@@ -46,9 +46,10 @@ public class OrsLogsPipeline {
 		PipelineOptionsFactory.register(MyOptions.class);
 		MyOptions options = PipelineOptionsFactory.create().as(MyOptions.class);
 		
-		String fileName = "src/main/config/app.properties"; //default location of property file
-		if(args.length>1){
-			fileName = args[1];
+		String fileName = "src/main/config/app.prod.properties"; //default location of property file
+		if(args.length>0){
+			fileName = args[0];
+			System.out.println("Using Property File");
 		}
 			
 		PropertiesConfiguration configuration = new PropertiesConfiguration(fileName);
